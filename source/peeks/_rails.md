@@ -1,3 +1,8 @@
+```ruby
+# Gemfile
+gem 'jsonapi-rails'
+
+# app/controllers/posts_controller.rb
 class PostsController < ApplicationController
   deserializable_resource :post, DeserializablePost, only: [:create, :update]
 
@@ -13,3 +18,4 @@ class PostsController < ApplicationController
            status: :created
   end
 end
+```

@@ -1,3 +1,8 @@
+```ruby
+# Gemfile
+gem 'jsonapi-hanami'
+
+# apps/api/controllers/posts/create.rb
 module API::Controllers::Posts
   class Create
     include API::Action
@@ -16,3 +21,4 @@ module API::Controllers::Posts
     end
   end
 end
+```
