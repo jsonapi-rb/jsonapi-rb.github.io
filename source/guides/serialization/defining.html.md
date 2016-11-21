@@ -153,6 +153,8 @@ Relationships are declared via the `has_many`, `has_one` and `belongs_to` DSL
 methods. `belongs_to` is actually an alias for `has_one`, and you can use both
 interchangeably.
 
+### Basics
+
 The shortest way to declare an association is simply:
 
 ```ruby
@@ -181,6 +183,8 @@ class SerializablePost < JSONAPI::Serializable::Resource
 end
 ```
 
+### Relationship-level links and meta
+
 Moreover, it is possible to declare links and meta informations inside a
 relationship via the `meta` and `link` DSL methods, the same way as for
 resource-level links and meta information.
@@ -198,6 +202,8 @@ class SerializablePost < JSONAPI::Serializable::Resource
   end
 end
 ```
+
+### Serializable resource class inference
 
 By default, for an instance of class `Post`, the corresponding serializable
 resource class will be assumed to be `SerializablePost` (this behavior can be
@@ -231,7 +237,8 @@ class SerializablePost < JSONAPI::Serializable::Resource
 end
 ```
 
+### Linkage data overriding
+
 Note: it is also possible to manually override the linkage data for a
 relationship (which can be useful to add linkage-level meta information) via the
 `linkage` DSL method.
-
