@@ -6,7 +6,7 @@ layout: guides
 ## What is jsonapi-rb?
 [jsonapi-rb](https://github.com/jsonapi-rb/jsonapi-rb) is a ruby library for
 producing and consuming [JSON API](http://jsonapi.org) documents. It is cleanly
-layered, has an intuitive yet intention-stating API, and no magic.
+layered, has an intuitive yet intent-stating API, and no magic.
 
 It is comprised of 4 independent micro-libraries:
 

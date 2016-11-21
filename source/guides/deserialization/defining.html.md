@@ -62,7 +62,7 @@ class DeserializablePost < JSONAPI::Deserializable::Post
   end
 
   # or
-  type  # implicitly expanded to `type { |t| field type: t }
+  type  # implicitly expanded to `type { |t| field type: t }`
 end
 ```
 
@@ -77,11 +77,11 @@ Example:
 class DeserializablePost < JSONAPI::Deserializable::Post
   # ...
   id do |i|
-    field primary_id: id.to_i
+    field primary_id: i.to_i
   end
 
   # or
-  id  # implicitly expanded to `id { |i| field id: i }
+  id  # implicitly expanded to `id { |i| field id: i }`
 end
 ```
 
@@ -104,7 +104,7 @@ class DeserializablePost < JSONAPI::Deserializable::Post
   end
 
   # or
-  attribute :date  # implicitly expanded to `attribute :date { |d| field date: d }
+  attribute :date  # implicitly expanded to `attribute(:date) { |d| field date: d }`
 end
 ```
 
