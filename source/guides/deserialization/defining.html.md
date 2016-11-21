@@ -155,11 +155,11 @@ class DeserializablePost < JSONAPI::Deserializable::Post
 end
 ```
 
-### Meta
+## Meta
 
 Not available yet.
 
-### Links
+## Links
 
 Not available yet.
 
