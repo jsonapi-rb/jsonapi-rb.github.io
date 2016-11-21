@@ -11,7 +11,7 @@ class SerializablePost < JSONAPI::Serializable::Resource
   belongs_to :author
 
   has_many :comments, 'V2::SerializableComment' do
-    resources do
+    data do
       @object.published_comments
     end
 

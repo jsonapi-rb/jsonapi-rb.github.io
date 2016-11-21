@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+
+    <title><%= current_page.data.title || "jsonapi-rb" %></title>
+
+    <%= stylesheet_link_tag 'toolkit' %>
+    <%= stylesheet_link_tag 'solarized' %>
+    <%= stylesheet_link_tag 'application' %>
+    <%= stylesheet_link_tag 'guides' %>
+  </head>
+
+  <body>
+    <%= partial 'navbar' %>
+    <div class="container docs-content">
+      <ul id="markdown-toc">
+        <li></li>
+        <li class="toc-group">
+          <a href="/guides">Introduction</a>
+        </li>
+        <li class="toc-group">
+          <a href="/guides/serialization">Serialization</a>
+          <ul>
+            <li><a href="/guides/serialization/defining.html">Defining resources</a></li>
+            <li><a href="/guides/serialization/rendering.html">Rendering resources</a></li>
+            <li><a href="/guides/serialization/errors.html">Rendering errors</a></li>
+          </ul>
+        </li>
+        <li class="toc-group">
+          <a href="/guides/deserialization">Deserialization</a>
+          <ul>
+            <li><a href="/guides/deserialization/defining.html">Defining resources</a></li>
+            <li><a href="/guides/deserialization/deserializing.html">Deserializing resources</a></li>
+          </ul>
+        </li>
+      </ul>
+      <%= yield %>
+    </div>
+
+    <%= partial 'footer' %>
+    <%= partial 'analytics' %>
+  </body>
+</html>
