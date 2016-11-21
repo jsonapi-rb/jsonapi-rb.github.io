@@ -21,12 +21,25 @@ building deserializable resource classes that transform an incoming JSON API
 payload into a custom hash,
 
 and 2 framework integrations:
+
 + [jsonapi-rails](https://github.com/jsonapi-rb/rails) for
 [Ruby on Rails](http://rubyonrails.org), with ActionController integration and
 generators,
 + [jsonapi-hanami](https://github.com/jsonapi-rb/hanami) for
 [Hanami](http://hanamirb.org) with Hanami::Controller::Action integration and
 (soon) generators.
+
+## Overview
+
+jsonapi-rb works by defining *mappers* (or *presenters*) to translate your
+business objects to JSON API documents, and JSON API payloads to custom hashes.
+
+The *deserializable resources* (the mappers from JSON API payloads to custom
+hashes) can be used directly, as the input payload will only contain flat data.
+
+The *serializable resources*, on the other hand, need to be coordinated through
+a *renderer* (as JSON API response document usually contain a graph of resources
+related to each other).
 
 ## Guides
 

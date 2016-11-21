@@ -48,9 +48,11 @@ For a comprehensive list of renderer options, see [Renderer options]().
 
 ## Hanami
 
-When using jsonapi-rb with Hanami (via the jsonapi-hanami gem), rendering is
-done by setting options directly on the controller action instance. The primary
-data is set via the `self.body` setter.
+When using jsonapi-rb with Hanami (via the jsonapi-hanami gem), enabling of
+jsonapi-rb features is opt-in, and is done by including
+`JSONAPI::Hanami::Action` in your actions.
+Rendering is done by setting options directly on the controller action instance.
+The primary data is set via the `self.body` setter.
 
 Exposures are available from within the SerializableResource class as instance
 variables.
@@ -59,6 +61,9 @@ Example:
 
 ```ruby
 module API::Controllers::Posts
+  include API::Action
+  include JSONAPI::Hanami::Action
+
   expose :url_helpers
 
   class Create
@@ -101,3 +106,5 @@ The available options are:
   + `meta`: top level meta information. This option can be specified as a hash.
   + `jsonapi`: top level `jsonapi` object. This option can be specified as a
     hash.
++ framework-specific options: in Hanami and Rails, the usual options such as
+`status` are respected.
