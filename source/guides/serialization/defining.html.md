@@ -249,6 +249,7 @@ The jsonapi-rails gem comes with generators for serializable resource classes.
 It infers the attributes and relationships from your model definition.
 
 Usage:
+
 ```
 $ bundle exec rails generate jsonapi:serializable Post
 >   created  app/serializable/serializable_post.rb
