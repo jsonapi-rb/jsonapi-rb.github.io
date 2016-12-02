@@ -4,10 +4,10 @@ gem 'jsonapi-rails'
 
 # app/controllers/posts_controller.rb
 class PostsController < ApplicationController
-  deserializable_resource :post, DeserializablePost, only: [:create, :update]
+  deserializable_resource :post, only: [:create, :update]
 
   def create_params
-    params.require(:post).permit!
+    params.require(:post).permit(:title, :content, :tag_ids)
   end
 
   def create

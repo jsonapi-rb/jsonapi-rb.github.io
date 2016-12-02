@@ -1,5 +1,5 @@
 ```ruby
-# Gemfile (optional)
+# Gemfile
 gem 'jsonapi-rb'
 
 # Serialization
@@ -14,12 +14,13 @@ JSONAPI::Serializable::Renderer.render(posts,
 # Deserialization
 require 'jsonapi/deserializable'
 
-DeserializablePost.call(json_hash)
+JSONAPI::Deserializable::Resource.call(json_hash)
 # => {
 #      title: 'Welcome',
-#      created_at: '2016-11-17',
+#      date: '2016-11-17',
 #      author_id: '5',
 #      author_type: 'users',
-#      comment_ids: ['13', '29', '31']
+#      comment_ids: ['13', '29', '31'],
+#      comment_types: ['comments', 'comments', 'comments']
 #    }
 ```

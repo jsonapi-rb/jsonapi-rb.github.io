@@ -8,7 +8,15 @@ module API::Controllers::Posts
     include API::Action
     include JSONAPI::Hanami::Action
 
-    deserializable_resource :post, DeserializablePost
+    deserializable_resource :post
+
+    params do
+      require(:post).schema do
+        required(:title)
+        required(:content)
+        required(:tag_ids)
+      end
+    end
 
     def call(params)
       repo = PostRepository.new

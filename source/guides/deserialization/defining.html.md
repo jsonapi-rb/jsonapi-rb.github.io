@@ -1,30 +1,26 @@
 ---
 layout: guides
 ---
-# Deserialization - Defining deserializable resources
+# Deserialization - Defining custom deserializable resources
 
-Deserializable resources are defined by subclassing
+Custom deserializable resources are defined by subclassing
 `JSONAPI::Deserializable::Resource` and using its DSL.
 
 Example:
 
 ```ruby
 class DeserializablePost < JSONAPI::Deserializable::Resource
-  type
-  id
-  attribute :title
-
   attribute :date do |attr|
-    field created_at: attr
+    { created_at: attr }
   end
 
   relationship :author do |_rel, id, type|
-    field author_id: id
-    field author_type: type
+    { user_id: id,
+      user_type: type }
   end
 
   relationship :comments do |_rel, ids, _types|
-    field comment_ids: ids
+    { response_ids: ids }
   end
 end
 
@@ -33,24 +29,23 @@ end
 #      type: 'posts',
 #      id: '5',
 #      created_at: '2016-11-18',
-#      author_id: '12',
-#      author_type: 'users',
-#      comment_ids: ['54', '32', '72']
+#      title: 'Hello JSON API',
+#      user_id: '12',
+#      user_type: 'users',
+#      response_ids: ['54', '32', '72']
 #    }
 ```
 
-The principle is simple: mapping values of elements of the input payload to
-fields of the result hash.
+The principle is simple: the payload elements for which a custom deserialization
+scheme was defined will use that, while other fields will be deserialized using
+the default deserialization scheme (which can itself be configured).
 
-In other words, you declare which elements you are interested in, and which
-fields you want to build from them (choosing the name and the value of the
-field). If the targeted element does not exist in the payload, the corresponding
+Note: If the targeted element does not exist in the payload, the corresponding
 fields are not defined.
 
 ## Type
 
-The type of the primary data can be accessed via the `type` DSL method. If no
-block is given, it will create a field named `type`.
+The type of the primary data can be accessed via the `type` DSL method.
 
 Example:
 
@@ -60,16 +55,12 @@ class DeserializablePost < JSONAPI::Deserializable::Post
   type do |t|
     field primary_type: t.capitalize
   end
-
-  # or
-  type  # implicitly expanded to `type { |t| field type: t }`
 end
 ```
 
 ## Id
 
-The id of the primary data can be accessed via the `id` DSL method. If no
-block is given, it will create a field named `id`.
+The id of the primary data can be accessed via the `id` DSL method.
 
 Example:
 
@@ -79,9 +70,6 @@ class DeserializablePost < JSONAPI::Deserializable::Post
   id do |i|
     field primary_id: i.to_i
   end
-
-  # or
-  id  # implicitly expanded to `id { |i| field id: i }`
 end
 ```
 
@@ -92,8 +80,6 @@ The `attribute` method takes a symbol representing the name of the targeted
 attribute in the input payload, and a block to define field(s) of the resulting
 hash.
 
-If no block is given, it will create a field with the same name.
-
 Example:
 
 ```ruby
@@ -102,9 +88,6 @@ class DeserializablePost < JSONAPI::Deserializable::Post
   attribute :date do |d|
     field created_at: d
   end
-
-  # or
-  attribute :date  # implicitly expanded to `attribute(:date) { |d| field date: d }`
 end
 ```
 
@@ -163,21 +146,44 @@ Not available yet.
 
 Not available yet.
 
+## Configuration
 
-## Generators
+The default deserialization scheme can be configure in the following way:
 
-### Rails
+```ruby
+# Modifying the global default deserialization scheme
+JSONAPI::Deserializable::Resource.configure do |config|
+  config.default_id   = proc { |id| { id: id } }
+  config.default_type = proc { |type| { type: type } }
+  config.default_attribute = proc do |key, value|
+    { key => value }
+  end
+  config.default_has_one = proc do |key, rel, id, type|
+    { "#{key}_id}".to_sym => id, "#{key}_type".to_sym => type }
+  end
+  config.default_has_many = proc do |key, rel, ids, types|
+    { "#{key}_ids}".to_sym => ids, "#{key}_types".to_sym => types }
+  end
+end
 
-The jsonapi-rails gem comes with generators for deserializable resource classes.
-They infer the attributes and relationships from your model definition.
+# Modifying the default deserialization scheme of a single deserializable
+#   resource class
 
-Usage:
+class DeserializablePost < JSONAPI::Deserializable::Resource
+  # ...
+end
 
+DeserializablePost.configure do |config|
+  config.default_id   = proc { |id| { id: id } }
+  config.default_type = proc { |type| { type: type } }
+  config.default_attribute = proc do |key, value|
+    { key => value }
+  end
+  config.default_has_one = proc do |key, rel, id, type|
+    { "#{key}_id}".to_sym => id, "#{key}_type".to_sym => type }
+  end
+  config.default_has_many = proc do |key, rel, ids, types|
+    { "#{key}_ids}".to_sym => ids, "#{key}_types".to_sym => types }
+  end
+end
 ```
-$ bundle exec rails generate jsonapi:deserializable Post
->   created  app/deserializable/deserializable_post.rb
-```
-
-### Hanami
-
-Not available yet.
