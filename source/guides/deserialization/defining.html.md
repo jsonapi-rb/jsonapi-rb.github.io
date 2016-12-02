@@ -53,7 +53,7 @@ Example:
 class DeserializablePost < JSONAPI::Deserializable::Post
   # ...
   type do |t|
-    field primary_type: t.capitalize
+    { primary_type: t.capitalize }
   end
 end
 ```
@@ -68,7 +68,7 @@ Example:
 class DeserializablePost < JSONAPI::Deserializable::Post
   # ...
   id do |i|
-    field primary_id: i.to_i
+    { primary_id: i.to_i }
   end
 end
 ```
@@ -86,7 +86,7 @@ Example:
 class DeserializablePost < JSONAPI::Deserializable::Post
   # ...
   attribute :date do |d|
-    field created_at: d
+    { created_at: d }
   end
 end
 ```
@@ -110,9 +110,9 @@ Example:
 class DeserializablePost < JSONAPI::Deserializable::Post
   # ...
   has_many :comments do |rel, ids, types|
-    field comment_ids: ids
-    field comment_types: types.map(&:capitalize)
-    field comment_meta: rel['meta']
+    { comment_ids: ids,
+      comment_types: types.map(&:capitalize),
+      comment_meta: rel['meta'] }
   end
 end
 ```
@@ -131,9 +131,9 @@ Example:
 class DeserializablePost < JSONAPI::Deserializable::Post
   # ...
   has_one :author do |rel, id, type|
-    field author_id: id
-    field author_type: type.capitalize
-    field author_meta: rel['meta']
+    { author_id: id,
+      author_type: type.capitalize,
+      author_meta: rel['meta'] }
   end
 end
 ```
