@@ -180,10 +180,10 @@ DeserializablePost.configure do |config|
     { key => value }
   end
   config.default_has_one = proc do |key, rel, id, type|
-    { "#{key}_id}".to_sym => id, "#{key}_type".to_sym => type }
+    { "#{key}_id".to_sym => id, "#{key}_type".to_sym => type }
   end
   config.default_has_many = proc do |key, rel, ids, types|
-    { "#{key}_ids}".to_sym => ids, "#{key}_types".to_sym => types }
+    { "#{key}_ids".to_sym => ids, "#{key}_types".to_sym => types }
   end
 end
 ```
