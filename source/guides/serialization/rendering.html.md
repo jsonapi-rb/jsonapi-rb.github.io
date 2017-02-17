@@ -10,7 +10,7 @@ ActiveRecord models, or even plain hashes), along with some optional parameters
 ## Plain ruby
 
 When using jsonapi-rb in plain ruby (or from within a framework outside of a
-controller), you can call the as follows:
+controller), you can render a document as follows:
 
 ```ruby
 JSONAPI::Serializable::Renderer.render(posts)
