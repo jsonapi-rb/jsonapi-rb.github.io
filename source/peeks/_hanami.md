@@ -11,7 +11,7 @@ module API::Controllers::Posts
     deserializable_resource :post
 
     params do
-      require(:post).schema do
+      required(:post).schema do
         required(:title)
         required(:content)
         required(:tag_ids)
