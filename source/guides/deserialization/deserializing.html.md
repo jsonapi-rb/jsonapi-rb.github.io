@@ -58,7 +58,7 @@ Example:
 
 ```ruby
 class PostsController < ApplicationController
-  desierializable_resource :post, DeserializablePost, only: [:create, :update]
+  deserializable_resource :post, DeserializablePost, only: [:create, :update]
 
   # ...
 
@@ -96,7 +96,7 @@ class API::Controllers::Create
   include API::Action
   include JSONAPI::Hanami::Action
 
-  desierializable_resource :post
+  deserializable_resource :post
 
   params do
     # validations on params[:post]
