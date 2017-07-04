@@ -61,19 +61,21 @@ Example:
 
 ```ruby
 module API::Controllers::Posts
-  include API::Action
-  include JSONAPI::Hanami::Action
-
-  expose :url_helpers
-
   class Create
-    # ...
-    @url_helpers = routes  # Will be available inside serializable resources.
+    include API::Action
+    include JSONAPI::Hanami::Action
 
-    self.data = posts
-    self.include = [:author, comments: [:author]]
-    self.fields  = { users: [:name, :email],
-                     posts: [:title, :content] }
+    expose :url_helpers
+
+    def call(params)
+      # ...
+      @url_helpers = routes  # Will be available inside serializable resources.
+
+      self.data = posts
+      self.include = [:author, comments: [:author]]
+      self.fields  = { users: [:name, :email],
+                       posts: [:title, :content] }
+    end
   end
 end
 ```
