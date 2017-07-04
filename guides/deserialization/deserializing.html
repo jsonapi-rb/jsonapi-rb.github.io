@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+  <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="description" content="Ruby library for efficiently building and consuming JSON API documents, with Rails and Hanami integrations.">
+    <meta name="keywords" content="JSONAPI jsonapi JSON API ruby library rails hanami resources efficient">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+
+    <title>jsonapi-rb | Efficiently build and consume JSON API documents.</title>
+
+    <link href="/stylesheets/toolkit.css" rel="stylesheet" />
+    <link href="/stylesheets/solarized.css" rel="stylesheet" />
+    <link href="/stylesheets/application.css" rel="stylesheet" />
+
+    <link href="/stylesheets/guides.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-static-top navbar-padded text-uppercase app-navbar">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed p-x-0" data-toggle="collapse" data-target="#navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">
+        <span>jsonapi-rb</span>
+      </a>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar-collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="/guides">Guides</a>
+        </li>
+        <li>
+          <a href="/contributors.html">Contributors</a>
+        </li>
+        <li>
+          <a href="https://github.com/jsonapi-rb" target="_blank">Source Code</a>
+        </li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</nav>
+
+    <div class="container docs-content">
+      <ul id="markdown-toc">
+        <li></li>
+        <li class="toc-group">
+          <a href="/guides">Introduction</a>
+        </li>
+        <li class="toc-group">
+          Getting started
+          <ul>
+            <li><a href="/guides/getting_started/plain_ruby.html">Plain ruby</a></li>
+            <li><a href="/guides/getting_started/sinatra.html">Sinatra</a></li>
+            <li><a href="/guides/getting_started/hanami.html">Hanami</a></li>
+            <li><a href="/guides/getting_started/rails.html">Ruby on Rails</a></li>
+          </ul>
+        </li>
+        <li class="toc-group">
+          <a href="/guides/serialization">Serialization</a>
+          <ul>
+            <li><a href="/guides/serialization/defining.html">Defining resources</a></li>
+            <li><a href="/guides/serialization/rendering.html">Rendering resources</a></li>
+            <li><a href="/guides/serialization/errors.html">Rendering errors</a></li>
+          </ul>
+        </li>
+        <li class="toc-group">
+          <a href="/guides/deserialization">Deserialization</a>
+          <ul>
+            <li><a href="/guides/deserialization/defining.html">Defining resources</a></li>
+            <li><a href="/guides/deserialization/deserializing.html">Deserializing resources</a></li>
+          </ul>
+        </li>
+      </ul>
+      <h1>Deserialization - Deserializing resources</h1>
+
+<p>Deserializing an input payload is straightforward: simply call the
+deserializable resource.</p>
+
+<p>Example (generic deserializable resource):</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">JSONAPI</span><span class="o">::</span><span class="no">Deserializable</span><span class="o">::</span><span class="no">Resource</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="n">json_hash</span><span class="p">)</span>
+<span class="c1"># =&gt; {</span>
+<span class="c1">#      type: 'posts',</span>
+<span class="c1">#      id: '5',</span>
+<span class="c1">#      title: 'Hello JSON API',</span>
+<span class="c1">#      date: '2016-11-18',</span>
+<span class="c1">#      author_id: '12',</span>
+<span class="c1">#      author_type: 'users',</span>
+<span class="c1">#      comments_ids: ['54', '32', '72']</span>
+<span class="c1">#      comments_types: ['comments', 'comments', 'comments']</span>
+<span class="c1">#    }</span>
+</code></pre></div>
+<p>Example (custom deserializable resource):</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">DeserializablePost</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="n">json_hash</span><span class="p">)</span>
+<span class="c1"># =&gt; {</span>
+<span class="c1">#      type: 'posts',</span>
+<span class="c1">#      id: '5',</span>
+<span class="c1">#      title: 'Hello JSON API',</span>
+<span class="c1">#      created_at: '2016-11-18',</span>
+<span class="c1">#      author_id: '12',</span>
+<span class="c1">#      author_type: 'users',</span>
+<span class="c1">#      comment_ids: ['54', '32', '72']</span>
+<span class="c1">#    }</span>
+</code></pre></div>
+<h2>Rails</h2>
+
+<p>When using jsonapi-rails, you can specify resources to deserialize at the
+controller level via the <code>deserializable_resource</code> method. This method takes
+a symbol representing the desired key under which the deserialized payload will
+be available within <code>params</code>, along with an options hash, which may contain the
+<code>class</code> option to specify a custom deserializable resource class. It is also
+possible to pass it a block for inline definition of custom deserializable
+resource classes.</p>
+
+<p>The deserialized hash is then available in <code>params</code> as the specified key, and
+is in fact a normal parameter (which can be validated using strong parameters or
+some validation library like <a href="http://dry-rb.org">dry-validation</a>).</p>
+
+<p>Moreover, this method accepts the <code>only</code> and <code>except</code> options for
+limiting the deserialization to certain actions.</p>
+
+<p>Example:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">deserializable_resource</span> <span class="ss">:post</span><span class="p">,</span> <span class="no">DeserializablePost</span><span class="p">,</span> <span class="ss">only: </span><span class="p">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:update</span><span class="p">]</span>
+
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">post</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">create_params</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">create_params</span>
+    <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:post</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:body</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<h2>Hanami</h2>
+
+<p>When using jsonapi-hanami, you can specify resources to deserialize at the
+controller level via the <code>deserializable_resource</code> method. This method takes
+a symbol representing the desired key under which the deserialized payload will
+be available within <code>params</code>, along with an options hash, which may contain the
+<code>class</code> option to specify a custom deserializable resource class. It is also
+possible to pass it a block for inline definition of custom deserializable
+resource classes.</p>
+
+<p>The deserialized hash is then available in <code>params</code> as the specified key, and
+is in fact a normal parameter (which can be validated using hanami-validations
+or any other validation library).</p>
+
+<p>Example:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">API</span><span class="o">::</span><span class="no">Controllers</span><span class="o">::</span><span class="no">Create</span>
+  <span class="kp">include</span> <span class="no">API</span><span class="o">::</span><span class="no">Action</span>
+  <span class="kp">include</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Hanami</span><span class="o">::</span><span class="no">Action</span>
+
+  <span class="n">deserializable_resource</span> <span class="ss">:post</span>
+
+  <span class="n">params</span> <span class="k">do</span>
+    <span class="c1"># validations on params[:post]</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">post</span> <span class="o">=</span> <span class="no">PostRepository</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:post</span><span class="p">])</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+    </div>
+
+    <div class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-3 m-b">
+        <ul class="list-unstyled list-spaced">
+          <li><h6 class="text-uppercase">Project</h6></li>
+          <li><a href="https://github.com/jsonapi-rb" target="_blank">GitHub</a></li>
+          <li><a href="http://twitter.com/jsonapirb" target="_blank">Twitter</a></li>
+          <li><a href="https://rubygems.org/gems/jsonapi-rb" target="_blank">Rubygems</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-3 m-b">
+        <ul class="list-unstyled list-spaced">
+          <li><h6 class="text-uppercase">Community</h6></li>
+          <li><a href="https://gitter.im/jsonapi-rb" target="_blank">Chat</a></li>
+          <li><a href="https://stackoverflow.com/questions/tagged/jsonapi-rb" target="_blank">StackOverflow</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-6">
+        <h6 class="text-uppercase">About</h6>
+        <p>
+          jsonapi-rb is a <a href="http://jsonapi.org">JSON API</a> library for
+          ruby &mdash; &copy; 2016-2017
+          <a href="http://lucashosseini.com" target="_blank">Lucas Hosseini</a>.<br>
+          Released under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-87685934-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  </body>
+</html>
