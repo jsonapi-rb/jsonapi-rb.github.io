@@ -139,7 +139,37 @@
 </code></pre></div>
 <h2>Examples</h2>
 
-<p>&lt;%= partial &lsquo;peeks/hanami&rsquo; %&gt;</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># Gemfile</span>
+<span class="n">gem</span> <span class="s1">'jsonapi-hanami'</span>
+
+<span class="c1"># apps/api/controllers/posts/create.rb</span>
+<span class="k">module</span> <span class="nn">API::Controllers::Posts</span>
+  <span class="k">class</span> <span class="nc">Create</span>
+    <span class="kp">include</span> <span class="no">API</span><span class="o">::</span><span class="no">Action</span>
+    <span class="kp">include</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Hanami</span><span class="o">::</span><span class="no">Action</span>
+
+    <span class="n">deserializable_resource</span> <span class="ss">:post</span>
+
+    <span class="n">params</span> <span class="k">do</span>
+      <span class="n">required</span><span class="p">(</span><span class="ss">:post</span><span class="p">).</span><span class="nf">schema</span> <span class="k">do</span>
+        <span class="n">required</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span>
+        <span class="n">required</span><span class="p">(</span><span class="ss">:content</span><span class="p">)</span>
+        <span class="n">required</span><span class="p">(</span><span class="ss">:tag_ids</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+      <span class="n">repo</span> <span class="o">=</span> <span class="no">PostRepository</span><span class="p">.</span><span class="nf">new</span>
+      <span class="n">post</span> <span class="o">=</span> <span class="n">repo</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:post</span><span class="p">])</span>
+
+      <span class="nb">self</span><span class="p">.</span><span class="nf">data</span> <span class="o">=</span> <span class="n">post</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">include</span> <span class="o">=</span> <span class="p">[</span><span class="ss">:author</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]]</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">fields</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">]</span> <span class="p">}</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="mi">201</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
 
     </div>
 

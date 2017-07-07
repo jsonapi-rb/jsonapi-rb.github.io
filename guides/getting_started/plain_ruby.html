@@ -84,7 +84,31 @@
 
 <h2>Examples</h2>
 
-<p>&lt;%= partial &lsquo;peeks/plain&rsquo; %&gt;</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># Gemfile</span>
+<span class="n">gem</span> <span class="s1">'jsonapi-rb'</span>
+
+<span class="c1"># Serialization</span>
+<span class="nb">require</span> <span class="s1">'jsonapi/serializable'</span>
+
+<span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Renderer</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="n">posts</span><span class="p">,</span>
+                                       <span class="ss">expose: </span><span class="p">{</span> <span class="ss">url_helpers: </span><span class="no">MyUrlHelper</span><span class="p">.</span><span class="nf">new</span> <span class="p">},</span>
+                                       <span class="ss">include: </span><span class="p">[</span><span class="ss">:author</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]],</span>
+                                       <span class="ss">fields: </span><span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">]</span> <span class="p">})</span>
+<span class="c1"># =&gt; { data: [...], included: [...] }</span>
+
+<span class="c1"># Deserialization</span>
+<span class="nb">require</span> <span class="s1">'jsonapi/deserializable'</span>
+
+<span class="no">JSONAPI</span><span class="o">::</span><span class="no">Deserializable</span><span class="o">::</span><span class="no">Resource</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="n">json_hash</span><span class="p">)</span>
+<span class="c1"># =&gt; {</span>
+<span class="c1">#      title: 'Welcome',</span>
+<span class="c1">#      date: '2016-11-17',</span>
+<span class="c1">#      author_id: '5',</span>
+<span class="c1">#      author_type: 'users',</span>
+<span class="c1">#      comment_ids: ['13', '29', '31'],</span>
+<span class="c1">#      comment_types: ['comments', 'comments', 'comments']</span>
+<span class="c1">#    }</span>
+</code></pre></div>
 
     </div>
 
