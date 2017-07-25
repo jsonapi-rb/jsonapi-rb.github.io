@@ -13,16 +13,16 @@ When using jsonapi-rb in plain ruby (or from within a framework outside of a
 controller), you can render a document as follows:
 
 ```ruby
-JSONAPI::Serializable::Renderer.render(posts)
+JSONAPI::Serializable::SuccessRenderer.render(posts)
 ```
 
 You can also pass options to the renderer:
 
 ```ruby
-JSONAPI::Serializable::Renderer.render(posts,
-                                       include: [:author, comments: [:author]],
-                                       fields:  { users: [:name, :email],
-                                                  posts: [:title, :content] })
+JSONAPI::Serializable::SuccessRenderer.render(posts,
+                                             include: [:author, comments: [:author]],
+                                             fields:  { users: [:name, :email],
+                                                        posts: [:title, :content] })
 ```
 
 For a comprehensive list of renderer options, see [Renderer options]().
@@ -52,9 +52,9 @@ When using jsonapi-rb with Hanami (via the jsonapi-hanami gem), enabling of
 jsonapi-rb features is opt-in, and is done by including
 `JSONAPI::Hanami::Action` in your actions.
 Rendering is done by setting options directly on the controller action instance.
-The primary data is set via the `self.body` setter.
+The primary data is set via the `self.data` setter.
 
-Exposures are available from within the SerializableResource class as instance
+Exposures are available from within the `SerializableResource` class as instance
 variables.
 
 Example:
@@ -96,13 +96,15 @@ The available options are:
   + `expose`: a hash of arbitrary variables that will be made available to the
     serializable resources as instance variables.
 + serializable resource class related options:
+  + `inferrer`: a hash globally mapping model class names to serializable resource
+    class names.
+  + `namespace`: the namespace in which to look for serializable resource
+    classes. This option can be specified as a constant (e.g. `V2`), or as a
+    string (e.g. `"V2"`).
   + `class`: the serializable resource class(es) to be used for the primary
     data. This option can be specified as a constant (e.g. `SerializablePost`),
     as a string (e.g. `"SerializablePost"`), or as a hash (e.g.
     `{ Article: "SerializableFormattedArticle", Letter: "SerializableFormattedLetter" }`).
-  + `namespace`: the namespace in which to look for serializable resource
-    classes. This option can be specified as a constant (e.g. `V2`), or as a
-    string (e.g. `"V2"`).
 + top level properties:
   + `links`: a set of top level links. This option can be specified as a hash.
   + `meta`: top level meta information. This option can be specified as a hash.

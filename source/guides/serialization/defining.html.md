@@ -20,7 +20,7 @@ class SerializablePost < JSONAPI::Serializable::Resource
 
   belongs_to :author
 
-  has_many :comments, class: 'V2::SerializableComment' do
+  has_many :comments do
     data do
       @object.published_comments
     end
@@ -45,22 +45,29 @@ end
 ```
 
 The principle is simple: you declare elements of the JSON API resource and
-specify their values.
+optionally specify their values.
 
 The underying object is available throughout the DSL as the instance variable
 `@object`. (In general, all *exposures* - that is, variables made available in
-the `render` call - are available throughout the DSL as instance variables.)
+the `render` call via the `expose` option - are available throughout the DSL
+as instance variables.)
 
 ## Type
 
 The `type` property is declared via the DSL method of the same name, and takes
-a symbol or a string.
+a symbol, a string, or a block.
 
-Example:
+Examples:
 
 ```ruby
 class SerializablePost < JSONAPI::Serializable::Resource
   type 'posts'
+end
+```
+
+```ruby
+class SerializablePost < JSONAPI::Serializable::Resource
+  type { @object.type }
 end
 ```
 
@@ -92,6 +99,11 @@ Example:
 class SerializablePost < JSONAPI::Serializable::Resource
   # ...
   attribute :date  # This will have value @object.date
+```
+
+```ruby
+class SerializablePost < JSONAPI::Serializable::Resource
+  # ...
   attribute :date do
     @object.created_at
   end
@@ -111,13 +123,13 @@ class SerializablePost < JSONAPI::Serializable::Resource
   meta foo: 'bar'
 end
 ```
-or dynamically in a block:
+or dynamically in a block (in case it needs access to the exposures):
 
 ```ruby
 class SerializablePost < JSONAPI::Serializable::Resource
   # ...
   meta do
-    { foo: 'bar' }
+    { foo: @object.foo }
   end
 end
 ```
@@ -237,20 +249,11 @@ class SerializablePost < JSONAPI::Serializable::Resource
 end
 ```
 
+Note that while this usage is supported, it is actually recommended to set a
+global explicit mapping at the renderer level.
+
 ### Linkage data overriding
 
 Note: it is also possible to manually override the linkage data for a
 relationship (which can be useful to add linkage-level meta information) via the
 `linkage` DSL method.
-
-## Rails generators
-
-The jsonapi-rails gem comes with generators for serializable resource classes.
-It infers the attributes and relationships from your model definition.
-
-Usage:
-
-```
-$ bundle exec rails generate jsonapi:serializable Post
->   created  app/serializable/serializable_post.rb
-```

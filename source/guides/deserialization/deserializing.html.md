@@ -6,23 +6,7 @@ layout: guides
 Deserializing an input payload is straightforward: simply call the
 deserializable resource.
 
-Example (generic deserializable resource):
-
-```ruby
-JSONAPI::Deserializable::Resource.call(json_hash)
-# => {
-#      type: 'posts',
-#      id: '5',
-#      title: 'Hello JSON API',
-#      date: '2016-11-18',
-#      author_id: '12',
-#      author_type: 'users',
-#      comments_ids: ['54', '32', '72']
-#      comments_types: ['comments', 'comments', 'comments']
-#    }
-```
-
-Example (custom deserializable resource):
+Example:
 
 ```ruby
 DeserializablePost.call(json_hash)
@@ -58,7 +42,7 @@ Example:
 
 ```ruby
 class PostsController < ApplicationController
-  deserializable_resource :post, DeserializablePost, only: [:create, :update]
+  deserializable_resource :post, class: DeserializablePost, only: [:create, :update]
 
   # ...
 

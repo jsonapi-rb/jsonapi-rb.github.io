@@ -5,8 +5,10 @@ layout: guides
 
 In order to build JSON API documents from your data, you need to define some
 *serializable resources*. Serializable resources encapsulate your domain objects
-(which can be any kind of objects) and present them in a suitable way for JSON
-API serialization. They are defined via an intuitive yet extensive DSL.
+(which can be any kind of objects -- `ActiveRecord`s, POROs, etc.) and present
+them in a suitable way for JSON API serialization. They are defined via an
+intuitive yet extensive DSL. In other libraries, serializable resources are
+usually called "serializers".
 
 Once your serializable resources are defined, you can pass your business objects
 to the *renderer*, that will build the appropriate serializable resources, and
