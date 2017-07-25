@@ -95,7 +95,7 @@
 
   <span class="n">belongs_to</span> <span class="ss">:author</span>
 
-  <span class="n">has_many</span> <span class="ss">:comments</span><span class="p">,</span> <span class="ss">class: </span><span class="s1">'V2::SerializableComment'</span> <span class="k">do</span>
+  <span class="n">has_many</span> <span class="ss">:comments</span> <span class="k">do</span>
     <span class="n">data</span> <span class="k">do</span>
       <span class="vi">@object</span><span class="p">.</span><span class="nf">published_comments</span>
     <span class="k">end</span>
@@ -119,20 +119,24 @@
 <span class="k">end</span>
 </code></pre></div>
 <p>The principle is simple: you declare elements of the JSON API resource and
-specify their values.</p>
+optionally specify their values.</p>
 
 <p>The underying object is available throughout the DSL as the instance variable
 <code>@object</code>. (In general, all <em>exposures</em> - that is, variables made available in
-the <code>render</code> call - are available throughout the DSL as instance variables.)</p>
+the <code>render</code> call via the <code>expose</code> option - are available throughout the DSL
+as instance variables.)</p>
 
 <h2>Type</h2>
 
 <p>The <code>type</code> property is declared via the DSL method of the same name, and takes
-a symbol or a string.</p>
+a symbol, a string, or a block.</p>
 
-<p>Example:</p>
+<p>Examples:</p>
 <div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">SerializablePost</span> <span class="o">&lt;</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Resource</span>
   <span class="n">type</span> <span class="s1">'posts'</span>
+<span class="k">end</span>
+</code></pre></div><div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">SerializablePost</span> <span class="o">&lt;</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Resource</span>
+  <span class="n">type</span> <span class="p">{</span> <span class="vi">@object</span><span class="p">.</span><span class="nf">type</span> <span class="p">}</span>
 <span class="k">end</span>
 </code></pre></div>
 <h2>Id</h2>
@@ -158,6 +162,8 @@ after the attributes on the underlying object).</p>
 <div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">SerializablePost</span> <span class="o">&lt;</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Resource</span>
   <span class="c1"># ...</span>
   <span class="n">attribute</span> <span class="ss">:date</span>  <span class="c1"># This will have value @object.date</span>
+</code></pre></div><div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">SerializablePost</span> <span class="o">&lt;</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Resource</span>
+  <span class="c1"># ...</span>
   <span class="n">attribute</span> <span class="ss">:date</span> <span class="k">do</span>
     <span class="vi">@object</span><span class="p">.</span><span class="nf">created_at</span>
   <span class="k">end</span>
@@ -174,11 +180,11 @@ be set directly as a hash:</p>
   <span class="n">meta</span> <span class="ss">foo: </span><span class="s1">'bar'</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>or dynamically in a block:</p>
+<p>or dynamically in a block (in case it needs access to the exposures):</p>
 <div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">SerializablePost</span> <span class="o">&lt;</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Resource</span>
   <span class="c1"># ...</span>
   <span class="n">meta</span> <span class="k">do</span>
-    <span class="p">{</span> <span class="ss">foo: </span><span class="s1">'bar'</span> <span class="p">}</span>
+    <span class="p">{</span> <span class="ss">foo: </span><span class="vi">@object</span><span class="p">.</span><span class="nf">foo</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
@@ -276,21 +282,15 @@ value can be either a constant:</p>
                             <span class="no">Admin</span><span class="p">:</span> <span class="s1">'SpecialSerializableAdmin'</span> <span class="p">}</span>
 <span class="k">end</span>
 </code></pre></div>
+<p>Note that while this usage is supported, it is actually recommended to set a
+global explicit mapping at the renderer level.</p>
+
 <h3>Linkage data overriding</h3>
 
 <p>Note: it is also possible to manually override the linkage data for a
 relationship (which can be useful to add linkage-level meta information) via the
 <code>linkage</code> DSL method.</p>
 
-<h2>Rails generators</h2>
-
-<p>The jsonapi-rails gem comes with generators for serializable resource classes.
-It infers the attributes and relationships from your model definition.</p>
-
-<p>Usage:</p>
-<div class="highlight"><pre class="highlight plaintext"><code>$ bundle exec rails generate jsonapi:serializable Post
-&gt;   created  app/serializable/serializable_post.rb
-</code></pre></div>
     </div>
 
     <div class="footer">

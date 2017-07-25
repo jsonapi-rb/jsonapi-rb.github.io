@@ -88,13 +88,13 @@ ActiveRecord models, or even plain hashes), along with some optional parameters
 
 <p>When using jsonapi-rb in plain ruby (or from within a framework outside of a
 controller), you can render a document as follows:</p>
-<div class="highlight"><pre class="highlight ruby"><code><span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Renderer</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="n">posts</span><span class="p">)</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">SuccessRenderer</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="n">posts</span><span class="p">)</span>
 </code></pre></div>
 <p>You can also pass options to the renderer:</p>
-<div class="highlight"><pre class="highlight ruby"><code><span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Renderer</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="n">posts</span><span class="p">,</span>
-                                       <span class="ss">include: </span><span class="p">[</span><span class="ss">:author</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]],</span>
-                                       <span class="ss">fields:  </span><span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">],</span>
-                                                  <span class="ss">posts: </span><span class="p">[</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span><span class="p">]</span> <span class="p">})</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">SuccessRenderer</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="n">posts</span><span class="p">,</span>
+                                             <span class="ss">include: </span><span class="p">[</span><span class="ss">:author</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]],</span>
+                                             <span class="ss">fields:  </span><span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">],</span>
+                                                        <span class="ss">posts: </span><span class="p">[</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span><span class="p">]</span> <span class="p">})</span>
 </code></pre></div>
 <p>For a comprehensive list of renderer options, see <a href="#">Renderer options</a>.</p>
 
@@ -118,9 +118,9 @@ via the usual <code>render</code> controller method:</p>
 jsonapi-rb features is opt-in, and is done by including
 <code>JSONAPI::Hanami::Action</code> in your actions.
 Rendering is done by setting options directly on the controller action instance.
-The primary data is set via the <code>self.body</code> setter.</p>
+The primary data is set via the <code>self.data</code> setter.</p>
 
-<p>Exposures are available from within the SerializableResource class as instance
+<p>Exposures are available from within the <code>SerializableResource</code> class as instance
 variables.</p>
 
 <p>Example:</p>
@@ -165,13 +165,15 @@ serializable resources as instance variables.</li>
 <li>serializable resource class related options:
 
 <ul>
+<li><code>inferrer</code>: a hash globally mapping model class names to serializable resource
+class names.</li>
+<li><code>namespace</code>: the namespace in which to look for serializable resource
+classes. This option can be specified as a constant (e.g. <code>V2</code>), or as a
+string (e.g. <code>&quot;V2&quot;</code>).</li>
 <li><code>class</code>: the serializable resource class(es) to be used for the primary
 data. This option can be specified as a constant (e.g. <code>SerializablePost</code>),
 as a string (e.g. <code>&quot;SerializablePost&quot;</code>), or as a hash (e.g.
 <code>{ Article: &quot;SerializableFormattedArticle&quot;, Letter: &quot;SerializableFormattedLetter&quot; }</code>).</li>
-<li><code>namespace</code>: the namespace in which to look for serializable resource
-classes. This option can be specified as a constant (e.g. <code>V2</code>), or as a
-string (e.g. <code>&quot;V2&quot;</code>).</li>
 </ul></li>
 <li>top level properties:
 

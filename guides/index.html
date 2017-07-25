@@ -94,7 +94,8 @@ validation of JSON API documents,</li>
 <li><a href="https://github.com/jsonapi-rb/renderer">jsonapi-renderer</a> for low-level
 rendering of JSON API documents,</li>
 <li><a href="https://github.com/jsonapi-rb/serializable">jsonapi-serializable</a> for
-building serializable resource classes from your business object,</li>
+building serializable resource classes from your business object &ndash; those are
+usually referred to as &ldquo;serializers&rdquo; in other libs,</li>
 <li><a href="https://github.com/jsonapi-rb/deserializable">jsonapi-deserializable</a> for
 building deserializable resource classes that transform an incoming JSON API
 payload into a custom hash,</li>
@@ -110,18 +111,6 @@ generators,</li>
 <a href="http://hanamirb.org">Hanami</a> with Hanami::Controller::Action integration and
 (soon) generators.</li>
 </ul>
-
-<h2>Overview</h2>
-
-<p>jsonapi-rb works by defining <em>mappers</em> (or <em>presenters</em>) to translate your
-business objects to JSON API documents, and JSON API payloads to custom hashes.</p>
-
-<p>The <em>deserializable resources</em> (the mappers from JSON API payloads to custom
-hashes) can be used directly, as the input payload will only contain flat data.</p>
-
-<p>The <em>serializable resources</em>, on the other hand, need to be coordinated through
-a <em>renderer</em> (as JSON API response document usually contain a graph of resources
-related to each other).</p>
 
 <h2>Guides</h2>
 
