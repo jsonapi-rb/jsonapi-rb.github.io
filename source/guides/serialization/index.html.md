@@ -14,5 +14,5 @@ Once your serializable resources are defined, you can pass your business objects
 to the *renderer*, that will build the appropriate serializable resources, and
 render them into a JSON API document.
 
-- [Defining serializable resources](guides/serialization/defining.html)
-- [Rendering JSON API documents](guides/serialization/rendering.html)
+- [Defining serializable resources](/guides/serialization/defining.html)
+- [Rendering JSON API documents](/guides/serialization/rendering.html)
