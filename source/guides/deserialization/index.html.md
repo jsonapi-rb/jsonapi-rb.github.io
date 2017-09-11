@@ -11,5 +11,5 @@ Once your deserializable resources are defined, you can call them on hashes
 representing input JSON API payloads, and obtain a hash that you can use
 directly to create/update your models.
 
-- [Defining deserializable resources](guides/deserialization/defining.html)
-- [Deserializing payloads](guides/deserialization/deserializing.html)
+- [Defining deserializable resources](/guides/deserialization/defining.html)
+- [Deserializing payloads](/guides/deserialization/deserializing.html)
