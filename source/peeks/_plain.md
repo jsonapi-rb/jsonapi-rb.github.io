@@ -5,8 +5,11 @@ gem 'jsonapi-rb'
 # Serialization
 require 'jsonapi/serializable'
 
-JSONAPI::Serializable::SuccessRenderer.render(
+renderer = JSONAPI::Serializable::Renderer.new
+
+renderer.render(
   posts,
+  class: { User: SerializableUser, Comment: SerializableComment },
   expose: { url_helpers: MyUrlHelper.new },
   include: [:author, comments: [:author]],
   fields: { users: [:name, :email] }

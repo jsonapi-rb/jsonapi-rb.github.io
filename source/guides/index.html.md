@@ -35,5 +35,6 @@ generators,
 These guides should get you up to speed with using jsonapi-rb. If you have more
 questions, feel free to drop by on [Gitter](http://gitter.im/jsonapi-rb).
 
++ [Getting started](/guides/getting_started)
 + [Serialization](/guides/serialization)
 + [Deserialization](/guides/deserialization)

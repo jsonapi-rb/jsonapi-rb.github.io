@@ -64,6 +64,37 @@ module Foo
 end
 ```
 
+5. Extend your actions to use jsonapi-rb:
+
+When using jsonapi-rb with Hanami (via the jsonapi-hanami gem), enabling of
+jsonapi-rb features is opt-in, and is done by including
+`JSONAPI::Hanami::Action` in your actions.
+Rendering is done by setting options directly on the controller action instance.
+The primary data is set via the `self.data` setter.
+
+Example:
+
+```ruby
+module API::Controllers::Posts
+  class Create
+    include API::Action
+    include JSONAPI::Hanami::Action
+
+    expose :url_helpers
+
+    def call(params)
+      # ...
+      @url_helpers = routes  # Will be available inside serializable resources.
+
+      self.data = posts
+      self.include = [:author, comments: [:author]]
+      self.fields  = { users: [:name, :email],
+                       posts: [:title, :content] }
+    end
+  end
+end
+```
+
 ## Examples
 
 <%= partial 'peeks/hanami' %>

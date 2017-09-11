@@ -221,37 +221,6 @@ By default, for an instance of class `Post`, the corresponding serializable
 resource class will be assumed to be `SerializablePost` (this behavior can be
 configured, see next section).
 
-In case you want to explicitly set the serializable resource class that will be
-used for the related resources, you can specify it via the `class` option. Its
-value can be either a constant:
-
-```ruby
-class SerializablePost < JSONAPI::Serializable::Resource
-  # ...
-  has_many :comments, class: New::SerializableComment
-end
-```
-a string:
-
-```ruby
-class SerializablePost < JSONAPI::Serializable::Resource
-  # ...
-  has_many :comments, class: 'New::SerializableComment'
-end
-```
-or a hash (for polymorphic relationships):
-
-```ruby
-class SerializablePost < JSONAPI::Serializable::Resource
-  # ...
-  has_one :author, class: { User: 'SpecialSerializableUser',
-                            Admin: 'SpecialSerializableAdmin' }
-end
-```
-
-Note that while this usage is supported, it is actually recommended to set a
-global explicit mapping at the renderer level.
-
 ### Linkage data overriding
 
 Note: it is also possible to manually override the linkage data for a

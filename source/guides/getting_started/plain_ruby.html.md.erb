@@ -3,8 +3,47 @@ layout: guides
 ---
 # Getting started - Plain ruby
 
-Soon
+Once your [serializable resources](/guides/serialization) are defined, building
+a JSON API document from your business objects is straightforward.
 
-## Examples
+When using jsonapi-rb in plain ruby (or from within a framework outside of a
+controller), building documents is done by calling the `render` method of a
+`JSONAPI::Serializable::Renderer` instance.
 
-<%= partial 'peeks/plain' %>
+For a comprehensive list of renderer options, see
+[Renderer options](/guides/serialization/rendering.html).
+
+## Rendering resources
+
+```ruby
+renderer = JSONAPI::Serializable::Renderer.new
+
+renderer.render(posts,
+                class: { Post: SerializablePost, User: SerializableUser,
+                         Comment: SerializableComment },
+                include: [:author, comments: [:author]],
+                fields:  { users: [:name, :email],
+                           posts: [:title, :content] })
+```
+
+## Rendering relationships
+
+```ruby
+renderer = JSONAPI::Serializable::Renderer.new
+
+renderer.render(posts, relationship: :comments
+                class: { Post: SerializablePost, User: SerializableUser,
+                         Comment: SerializableComment },
+                include: [comments: [:author]],
+                fields:  { users: [:name, :email],
+                           posts: [:title, :content] })
+```
+
+## Rendering errors
+
+```ruby
+renderer = JSONAPI::Serializable::Renderer.new
+
+renderer.render_errors(errors,
+                       class: { Hash: SerializableErrorHash })
+```
