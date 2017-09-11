@@ -118,8 +118,11 @@
 <span class="c1"># Serialization</span>
 <span class="nb">require</span> <span class="s1">'jsonapi/serializable'</span>
 
-<span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">SuccessRenderer</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span>
+<span class="n">renderer</span> <span class="o">=</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Renderer</span><span class="p">.</span><span class="nf">new</span>
+
+<span class="n">renderer</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span>
   <span class="n">posts</span><span class="p">,</span>
+  <span class="ss">class: </span><span class="p">{</span> <span class="no">User</span><span class="p">:</span> <span class="no">SerializableUser</span><span class="p">,</span> <span class="no">Comment</span><span class="p">:</span> <span class="no">SerializableComment</span> <span class="p">},</span>
   <span class="ss">expose: </span><span class="p">{</span> <span class="ss">url_helpers: </span><span class="no">MyUrlHelper</span><span class="p">.</span><span class="nf">new</span> <span class="p">},</span>
   <span class="ss">include: </span><span class="p">[</span><span class="ss">:author</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]],</span>
   <span class="ss">fields: </span><span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">]</span> <span class="p">}</span>

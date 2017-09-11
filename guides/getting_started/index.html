@@ -78,44 +78,27 @@
           </ul>
         </li>
       </ul>
-      <h1>Serialization - Rendering documents</h1>
+      <h1>Getting started</h1>
 
-<p>The renderer takes your business objects (which can be any ruby objects: POROs,
-ActiveRecord models, or even plain hashes), along with some optional parameters
-(<code>include</code>, <code>fields</code>, etc.), and builds the JSON API document.</p>
+<p>jsonapi-rb works by defining <em>serializable resources</em> for your business objects,
+which describe how to serialize a model of a given type in a given serialization
+context.</p>
 
-<p>The available global options are:</p>
+<p>The <em>renderer</em> then builds a JSON API document from your business objects.
+In order to do so, it needs to find for each type of model the corresponding
+serializable resource class, instantiate it, and then combine all the JSON API
+representations of isolated resources.</p>
 
-<ul>
-<li>serializable resource class related options:
-
-<ul>
-<li><code>class</code>: a hash globally mapping model class names to serializable resource
-class names.</li>
-</ul></li>
-<li>top level properties:
+<p>Some context can be forwarded to the serializable resources: the <em>exposures</em>,
+specified when calling the renderer, are available within the serializable
+resource as instance variables.</p>
 
 <ul>
-<li><code>links</code>: a set of top level links. This option can be specified as a hash.</li>
-<li><code>meta</code>: top level meta information. This option can be specified as a hash.</li>
-<li><code>jsonapi</code>: top level <code>jsonapi</code> object. This option can be specified as a
-hash.</li>
-</ul></li>
-<li>framework-specific options: in Hanami and Rails, the usual options such as
-<code>status</code> are respected.</li>
+<li><a href="/guides/getting_started/plain_ruby.html">Plain Ruby</a></li>
+<li><a href="/guides/getting_started/rails.html">Ruby on Rails</a></li>
+<li><a href="/guides/getting_started/hanami.html">Hanami</a></li>
+<li><a href="/guides/getting_started/sinatra.html">Sinatra</a></li>
 </ul>
-
-<p>When serializing resources and relationships, the following
-data-related options are also available:
-+ <code>include</code>: the related resources to include in the document. This option can
-  be specified as a string (e.g. <code>&quot;author,comments.author&quot;</code>), or as an array/
-  hash of symbols (e.g. <code>[:author, comments: [:author]]</code>).
-+ <code>fields</code>: a restricted set of fields for some or all resources. This option
-  can be specified as a hash of arrays of symbols (e.g.
-  <code>{ users: [:name, :email], posts: [:title, :content] }</code>).
-+ <code>expose</code>: a hash of arbitrary variables that will be made available to the
-  serializable resources as instance variables.
-+ <code>cache</code>: a cache supporting <code>fetch_multi</code> for fragment caching.</p>
 
     </div>
 

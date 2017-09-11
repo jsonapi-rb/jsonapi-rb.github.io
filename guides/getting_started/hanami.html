@@ -137,6 +137,36 @@
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
+<ol>
+<li>Extend your actions to use jsonapi-rb:</li>
+</ol>
+
+<p>When using jsonapi-rb with Hanami (via the jsonapi-hanami gem), enabling of
+jsonapi-rb features is opt-in, and is done by including
+<code>JSONAPI::Hanami::Action</code> in your actions.
+Rendering is done by setting options directly on the controller action instance.
+The primary data is set via the <code>self.data</code> setter.</p>
+
+<p>Example:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">API::Controllers::Posts</span>
+  <span class="k">class</span> <span class="nc">Create</span>
+    <span class="kp">include</span> <span class="no">API</span><span class="o">::</span><span class="no">Action</span>
+    <span class="kp">include</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Hanami</span><span class="o">::</span><span class="no">Action</span>
+
+    <span class="n">expose</span> <span class="ss">:url_helpers</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+      <span class="c1"># ...</span>
+      <span class="vi">@url_helpers</span> <span class="o">=</span> <span class="n">routes</span>  <span class="c1"># Will be available inside serializable resources.</span>
+
+      <span class="nb">self</span><span class="p">.</span><span class="nf">data</span> <span class="o">=</span> <span class="n">posts</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">include</span> <span class="o">=</span> <span class="p">[</span><span class="ss">:author</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]]</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">fields</span>  <span class="o">=</span> <span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">],</span>
+                       <span class="ss">posts: </span><span class="p">[</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span><span class="p">]</span> <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
 <h2>Examples</h2>
 
 <div class="highlight"><pre class="highlight ruby"><code><span class="c1"># Gemfile</span>

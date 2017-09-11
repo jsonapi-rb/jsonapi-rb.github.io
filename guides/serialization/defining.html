@@ -261,30 +261,6 @@ resource-level links and meta information.</p>
 resource class will be assumed to be <code>SerializablePost</code> (this behavior can be
 configured, see next section).</p>
 
-<p>In case you want to explicitly set the serializable resource class that will be
-used for the related resources, you can specify it via the <code>class</code> option. Its
-value can be either a constant:</p>
-<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">SerializablePost</span> <span class="o">&lt;</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Resource</span>
-  <span class="c1"># ...</span>
-  <span class="n">has_many</span> <span class="ss">:comments</span><span class="p">,</span> <span class="ss">class: </span><span class="no">New</span><span class="o">::</span><span class="no">SerializableComment</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>a string:</p>
-<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">SerializablePost</span> <span class="o">&lt;</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Resource</span>
-  <span class="c1"># ...</span>
-  <span class="n">has_many</span> <span class="ss">:comments</span><span class="p">,</span> <span class="ss">class: </span><span class="s1">'New::SerializableComment'</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>or a hash (for polymorphic relationships):</p>
-<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">SerializablePost</span> <span class="o">&lt;</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Resource</span>
-  <span class="c1"># ...</span>
-  <span class="n">has_one</span> <span class="ss">:author</span><span class="p">,</span> <span class="ss">class: </span><span class="p">{</span> <span class="no">User</span><span class="p">:</span> <span class="s1">'SpecialSerializableUser'</span><span class="p">,</span>
-                            <span class="no">Admin</span><span class="p">:</span> <span class="s1">'SpecialSerializableAdmin'</span> <span class="p">}</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>Note that while this usage is supported, it is actually recommended to set a
-global explicit mapping at the renderer level.</p>
-
 <h3>Linkage data overriding</h3>
 
 <p>Note: it is also possible to manually override the linkage data for a

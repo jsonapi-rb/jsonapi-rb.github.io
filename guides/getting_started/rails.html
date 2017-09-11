@@ -80,30 +80,91 @@
       </ul>
       <h1>Getting started - Ruby on Rails</h1>
 
-<p>Soon</p>
+<p>Start by adding the following to your <code>Gemfile</code>:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">gem</span> <span class="s1">'jsonapi-rails'</span>
+</code></pre></div>
+<p>Then, once your <a href="/guides/serialization">serializable resources</a> are defined, building
+a JSON API document from your business objects is straightforward: simply pass them
+to the <code>render</code> method.</p>
 
-<h2>Examples</h2>
+<p>For a comprehensive list of renderer options, see
+<a href="/guides/serialization/rendering.html">Renderer options</a>.</p>
 
-<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># Gemfile</span>
-<span class="n">gem</span> <span class="s1">'jsonapi-rails'</span>
+<h2>Rendering resources</h2>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># ...</span>
 
-<span class="c1"># app/controllers/posts_controller.rb</span>
-<span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">deserializable_resource</span> <span class="ss">:post</span><span class="p">,</span> <span class="ss">only: </span><span class="p">[</span><span class="ss">:create</span><span class="p">,</span> <span class="ss">:update</span><span class="p">]</span>
-
-  <span class="k">def</span> <span class="nf">create_params</span>
-    <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:post</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">:tag_ids</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="n">render</span> <span class="ss">jsonapi: </span><span class="no">Posts</span><span class="p">.</span><span class="nf">all</span><span class="p">,</span> <span class="ss">include: </span><span class="p">[</span><span class="ss">:author</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]],</span>
+           <span class="ss">fields: </span><span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">],</span>
+                     <span class="ss">posts: </span><span class="p">[</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span><span class="p">]</span> <span class="p">}</span>
   <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nf">create</span>
-    <span class="n">post</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">create_params</span><span class="p">)</span>
-    <span class="n">render</span> <span class="ss">jsonapi: </span><span class="n">post</span><span class="p">,</span>
-           <span class="ss">include: </span><span class="p">[</span><span class="ss">:author</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]],</span>
-           <span class="ss">fields: </span><span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">]</span> <span class="p">},</span>
-           <span class="ss">status: :created</span>
-  <span class="k">end</span>
+  <span class="c1"># ...</span>
 <span class="k">end</span>
 </code></pre></div>
+<h2>Rendering relationships</h2>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">comments_relationship</span>
+    <span class="n">post</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="ss">id: </span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+    <span class="n">render</span> <span class="ss">jsonapi: </span><span class="n">post</span><span class="p">,</span> <span class="ss">relationship: :comments</span><span class="p">,</span>
+           <span class="ss">include: </span><span class="p">[</span><span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]],</span>
+           <span class="ss">fields: </span><span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">],</span>
+                     <span class="ss">posts: </span><span class="p">[</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span><span class="p">]</span> <span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div>
+<h2>Rendering errors</h2>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">post</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:post</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">post</span><span class="p">.</span><span class="nf">save</span>
+      <span class="n">render</span> <span class="ss">jsonapi: </span><span class="n">post</span>
+    <span class="k">else</span>
+      <span class="n">render</span> <span class="ss">jsonapi_errors: </span><span class="n">post</span><span class="p">.</span><span class="nf">errors</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div>
+<h2>Configuration</h2>
+
+<h3>Application-wide settings</h3>
+
+<p>You can customize default behaviors in an initializer (<code>$ rails generate jsonapi:initializer</code>).</p>
+
+<h3>Controller-wide settings</h3>
+
+<p>It is also possible to override application-wide settings at controller level. Simply define
+one of the available hooks:
+<code>jsonapi_class</code>, <code>jsonapi_errors_class</code>,<code>jsonapi_object</code>, <code>jsonapi_include</code>,
+<code>jsonapi_fields</code>, <code>jsonapi_expose</code>, <code>jsonapi_pagination</code>.</p>
+
+<h3>Action-wide settings</h3>
+
+<p>It is always possible to override the application/controller-wide settings at action level
+by providing the relevant <a href="/guides/serialization/rendering.html">renderer options</a>.</p>
+
+<h3>Serializable class lookup</h3>
+
+<p>By default, for an instance of <code>Article</code>, the corresponding serializable resource class
+will be guessed as <code>SerializableArticle</code>.</p>
+
+<p>This behavior is customizable by overriding the <code>jsonapi_class</code> setting (or by supplying
+a <code>class</code> renderer option). Either set it to an explicit hash, or a hash with a dynamic
+default value for inferrence.</p>
+
+<h3>Pagination</h3>
+
+<p>TODO</p>
 
     </div>
 

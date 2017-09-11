@@ -80,39 +80,42 @@
       </ul>
       <h1>Getting started - Plain ruby</h1>
 
-<p>Soon</p>
+<p>Once your <a href="/guides/serialization">serializable resources</a> are defined, building
+a JSON API document from your business objects is straightforward.</p>
 
-<h2>Examples</h2>
+<p>When using jsonapi-rb in plain ruby (or from within a framework outside of a
+controller), building documents is done by calling the <code>render</code> method of a
+<code>JSONAPI::Serializable::Renderer</code> instance.</p>
 
-<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># Gemfile</span>
-<span class="n">gem</span> <span class="s1">'jsonapi-rb'</span>
+<p>For a comprehensive list of renderer options, see
+<a href="/guides/serialization/rendering.html">Renderer options</a>.</p>
 
-<span class="c1"># Serialization</span>
-<span class="nb">require</span> <span class="s1">'jsonapi/serializable'</span>
+<h2>Rendering resources</h2>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">renderer</span> <span class="o">=</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Renderer</span><span class="p">.</span><span class="nf">new</span>
 
-<span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">SuccessRenderer</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span>
-  <span class="n">posts</span><span class="p">,</span>
-  <span class="ss">expose: </span><span class="p">{</span> <span class="ss">url_helpers: </span><span class="no">MyUrlHelper</span><span class="p">.</span><span class="nf">new</span> <span class="p">},</span>
-  <span class="ss">include: </span><span class="p">[</span><span class="ss">:author</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]],</span>
-  <span class="ss">fields: </span><span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">]</span> <span class="p">}</span>
-<span class="p">)</span>
-<span class="c1"># =&gt; { data: [...], included: [...] }</span>
-
-<span class="c1"># Deserialization</span>
-<span class="nb">require</span> <span class="s1">'jsonapi/deserializable'</span>
-
-<span class="n">resource</span> <span class="o">=</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Deserializable</span><span class="o">::</span><span class="no">Resource</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">json_hash</span><span class="p">)</span>
-<span class="n">resource</span><span class="p">.</span><span class="nf">to_h</span>
-<span class="c1"># =&gt; {</span>
-<span class="c1">#      title: 'Welcome',</span>
-<span class="c1">#      date: '2016-11-17',</span>
-<span class="c1">#      author_id: '5',</span>
-<span class="c1">#      author_type: 'users',</span>
-<span class="c1">#      comments_ids: ['13', '29', '31'],</span>
-<span class="c1">#      comments_types: ['comments', 'comments', 'comments']</span>
-<span class="c1">#    }</span>
+<span class="n">renderer</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="n">posts</span><span class="p">,</span>
+                <span class="ss">class: </span><span class="p">{</span> <span class="no">Post</span><span class="p">:</span> <span class="no">SerializablePost</span><span class="p">,</span> <span class="no">User</span><span class="p">:</span> <span class="no">SerializableUser</span><span class="p">,</span>
+                         <span class="no">Comment</span><span class="p">:</span> <span class="no">SerializableComment</span> <span class="p">},</span>
+                <span class="ss">include: </span><span class="p">[</span><span class="ss">:author</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]],</span>
+                <span class="ss">fields:  </span><span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">],</span>
+                           <span class="ss">posts: </span><span class="p">[</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span><span class="p">]</span> <span class="p">})</span>
 </code></pre></div>
+<h2>Rendering relationships</h2>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">renderer</span> <span class="o">=</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Renderer</span><span class="p">.</span><span class="nf">new</span>
 
+<span class="n">renderer</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="n">posts</span><span class="p">,</span> <span class="ss">relationship: :comments</span>
+                <span class="ss">class: </span><span class="p">{</span> <span class="no">Post</span><span class="p">:</span> <span class="no">SerializablePost</span><span class="p">,</span> <span class="no">User</span><span class="p">:</span> <span class="no">SerializableUser</span><span class="p">,</span>
+                         <span class="no">Comment</span><span class="p">:</span> <span class="no">SerializableComment</span> <span class="p">},</span>
+                <span class="ss">include: </span><span class="p">[</span><span class="ss">comments: </span><span class="p">[</span><span class="ss">:author</span><span class="p">]],</span>
+                <span class="ss">fields:  </span><span class="p">{</span> <span class="ss">users: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">],</span>
+                           <span class="ss">posts: </span><span class="p">[</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span><span class="p">]</span> <span class="p">})</span>
+</code></pre></div>
+<h2>Rendering errors</h2>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">renderer</span> <span class="o">=</span> <span class="no">JSONAPI</span><span class="o">::</span><span class="no">Serializable</span><span class="o">::</span><span class="no">Renderer</span><span class="p">.</span><span class="nf">new</span>
+
+<span class="n">renderer</span><span class="p">.</span><span class="nf">render_errors</span><span class="p">(</span><span class="n">errors</span><span class="p">,</span>
+                       <span class="ss">class: </span><span class="p">{</span> <span class="no">Hash</span><span class="p">:</span> <span class="no">SerializableErrorHash</span> <span class="p">})</span>
+</code></pre></div>
     </div>
 
     <div class="footer">
