@@ -54,7 +54,7 @@
           <a href="/guides">Introduction</a>
         </li>
         <li class="toc-group">
-          Getting started
+          <a href="/guides/getting_started/">Getting started</a>
           <ul>
             <li><a href="/guides/getting_started/plain_ruby.html">Plain ruby</a></li>
             <li><a href="/guides/getting_started/sinatra.html">Sinatra</a></li>
@@ -106,16 +106,19 @@ hash.</li>
 </ul>
 
 <p>When serializing resources and relationships, the following
-data-related options are also available:
-+ <code>include</code>: the related resources to include in the document. This option can
-  be specified as a string (e.g. <code>&quot;author,comments.author&quot;</code>), or as an array/
-  hash of symbols (e.g. <code>[:author, comments: [:author]]</code>).
-+ <code>fields</code>: a restricted set of fields for some or all resources. This option
-  can be specified as a hash of arrays of symbols (e.g.
-  <code>{ users: [:name, :email], posts: [:title, :content] }</code>).
-+ <code>expose</code>: a hash of arbitrary variables that will be made available to the
-  serializable resources as instance variables.
-+ <code>cache</code>: a cache supporting <code>fetch_multi</code> for fragment caching.</p>
+data-related options are also available:</p>
+
+<ul>
+<li><code>include</code>: the related resources to include in the document. This option can
+be specified as a string (e.g. <code>&quot;author,comments.author&quot;</code>), or as an array/
+hash of symbols (e.g. <code>[:author, comments: [:author]]</code>).</li>
+<li><code>fields</code>: a restricted set of fields for some or all resources. This option
+can be specified as a hash of arrays of symbols (e.g.
+<code>{ users: [:name, :email], posts: [:title, :content] }</code>).</li>
+<li><code>expose</code>: a hash of arbitrary variables that will be made available to the
+serializable resources as instance variables.</li>
+<li><code>cache</code>: a cache supporting <code>fetch_multi</code> for fragment caching.</li>
+</ul>
 
     </div>
 
