@@ -25,7 +25,7 @@ JSONAPI::Serializable::SuccessRenderer.render(posts,
                                                         posts: [:title, :content] })
 ```
 
-For a comprehensive list of renderer options, see [Renderer options]().
+For a comprehensive list of renderer options, see [Renderer options](#renderer-options).
 
 ## Ruby on Rails
 
@@ -44,7 +44,7 @@ render jsonapi: posts,
                   posts: [:title, :content] }
 ```
 
-For a comprehensive list of renderer options, see [Renderer options]().
+For a comprehensive list of renderer options, see [Renderer options](#renderer-options).
 
 ## Hanami
 
@@ -80,9 +80,9 @@ module API::Controllers::Posts
 end
 ```
 
-For a comprehensive list of renderer options, see [Renderer options]().
+For a comprehensive list of renderer options, see [Renderer options](#renderer-options).
 
-## Renderer options
+## Renderer options<a name="renderer-options"></a>
 
 The available options are:
 
