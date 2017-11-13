@@ -9,14 +9,30 @@ Start by adding the following to your `Gemfile`:
 gem 'jsonapi-rails'
 ```
 
-Then, once your [serializable resources](/guides/serialization) are defined, building
+Every object and its relationships that you intend to render will need to be
+defined as [serializable resources](/guides/serialization). Then, building
 a JSON API document from your business objects is straightforward: simply pass them
 to the `render` method.
 
-For a comprehensive list of renderer options, see
-[Renderer options](/guides/serialization/rendering.html).
+## Rendering a single resource
 
-## Rendering resources
+In this example, the `Post` model should have a corresponding `SerializableScan`,
+then all that is required for `jsonapi-rails` to render it is the use of the
+`:jsonapi` option with `render`:
+
+```ruby
+class PostsController < ActionController::Base
+  # ...
+
+  def index
+    render jsonapi: Posts.all
+  end
+
+  # ...
+end
+```
+
+## Rendering resources with related resources included.
 
 ```ruby
 class PostsController < ActionController::Base
@@ -32,7 +48,15 @@ class PostsController < ActionController::Base
 end
 ```
 
+In this example, `SerializableResource`s should be defined for `Post`, `Comment`
+and `User` (the `Author` relationship's class). The include parameter maps to
+jsonapi's concept of inclusion, and will produce an `includes` top level member.
+
+
 ## Rendering relationships
+
+To render relationships per the `jsonapi` spec, the relationships should be
+defined as such and included:
 
 ```ruby
 class PostsController < ActionController::Base
@@ -49,6 +73,12 @@ class PostsController < ActionController::Base
   # ...
 end
 ```
+
+Again, in this example a `PostSerializer`, `CommentSerializer` and `UserSerializer`
+should exist. This will produce a compound document that describes the `Post`,
+and its `Comment` relationships, with the serialized `Comment` and author (`User`)
+included in the resulting json.
+
 
 ## Rendering errors
 
@@ -69,6 +99,9 @@ class PostsController < ActionController::Base
   # ...
 end
 ```
+
+For a comprehensive list of renderer options, see
+[Renderer options](/guides/serialization/rendering.html).
 
 ## Configuration
 
