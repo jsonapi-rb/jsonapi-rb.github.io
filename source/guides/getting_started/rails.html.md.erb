@@ -70,6 +70,63 @@ class PostsController < ActionController::Base
 end
 ```
 
+## Serializable Class Lookup
+
+By default, for an instance of `Post`, the corresponding serializable resource class
+will be guessed as `SerializablePost`. But for situations where your classes might fall outside of this mapping, you can specify custom behavior.
+
+
+Example:
+
+```ruby
+class Post < ApplicationRecord
+end
+
+class Posts::Publish < Post
+  # publishing-only related logic
+end
+```
+
+`jsonapi-rb` maintains a hash that stores a list of class names as keys, and what serializable resource to use for that class as the corresponding values. You give it a class name, and it tells you what class to use to serialize it.
+
+To render your `Posts::Publish` object using `SerializablePost`, you'll configure this hash to be:
+
+```ruby
+{ 'Posts::Publish': SerializablePost }
+```
+
+You can set this to apply at different levels of impact across your application.
+
+### Set this option inside your controller action
+
+```ruby
+render jsonapi: @post, class: { 'Posts::Publish': SerializablePost }
+```
+
+### Set this option across an entire controller
+
+```ruby
+class PostsController < ApplicationController
+  def jsonapi_class
+    super.merge(
+      'Posts::Publish': SerializablePost
+    )
+  end
+end
+```
+
+### Set this option across your entire application
+
+```ruby
+class ApplicationController < ActionController::API
+  def jsonapi_class
+    super.merge(
+      'Posts::Publish': SerializablePost
+    )
+  end
+end
+```
+
 ## Configuration
 
 ### Application-wide settings
@@ -87,15 +144,6 @@ one of the available hooks:
 
 It is always possible to override the application/controller-wide settings at action level
 by providing the relevant [renderer options](/guides/serialization/rendering.html).
-
-### Serializable class lookup
-
-By default, for an instance of `Article`, the corresponding serializable resource class
-will be guessed as `SerializableArticle`.
-
-This behavior is customizable by overriding the `jsonapi_class` setting (or by supplying
-a `class` renderer option). Either set it to an explicit hash, or a hash with a dynamic
-default value for inferrence.
 
 ### Pagination
 
