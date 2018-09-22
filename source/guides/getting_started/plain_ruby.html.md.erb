@@ -42,8 +42,57 @@ renderer.render(posts, relationship: :comments
 ## Rendering errors
 
 ```ruby
+class SerializableError < JSONAPI::Serializable::Error
+  title do
+    "Invalid #{@field}" unless @field.nil?
+  end
+
+  detail do
+    @message
+  end
+
+  source do
+    pointer "/data/attributes/#{@field}" unless @field.nil?
+  end
+end
+
+class SerializableErrors
+  def initialize(exposures)
+    @errors = exposures[:object]
+    freeze
+  end
+
+  def as_jsonapi
+    @errors.keys.flat_map do |key|
+      @errors[key].map do |message|
+        SerializableError.new(
+          field: key,
+          message: message
+        ).as_jsonapi
+      end
+    end
+  end
+end
+
+
 renderer = JSONAPI::Serializable::Renderer.new
 
+# errors input signature
+# errors = [
+#   { 
+#     title: [
+#       "must be filled",
+#       "size cannot be greater than 100"
+#     ]
+#   },
+#   { 
+#     body: [
+#       "must be filled",
+#       "size cannot be less than 3"
+#     ]
+#   }
+# ]
+
 renderer.render_errors(errors,
-                       class: { Hash: SerializableErrorHash })
+                       class: { Hash: SerializableErrors })
 ```
