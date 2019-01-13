@@ -3,22 +3,50 @@ layout: guides
 ---
 # Getting started - Ruby on Rails
 
-Start by adding the following to your `Gemfile`:
+Start by adding the `jsonapi-rails` gem to your `Gemfile`:
 
 ```ruby
 gem 'jsonapi-rails'
 ```
 
-Then, once your [serializable resources](/guides/serialization) are defined, building
-a JSON API document from your business objects is straightforward: simply pass them
-to the `render` method.
+Then run `bundle install`.
 
-For a comprehensive list of renderer options, see
-[Renderer options](/guides/serialization/rendering.html).
+## Defining Serializable and Deserializable resources
 
-## Rendering resources
+Now define your serializable and deserializable resources.
+
+### Serializable resources
 
 ```ruby
+# app/serializers/post.rb
+class SerializablePost < JSONAPI::Serializable::Resource
+  type 'posts'
+
+  attributes :title, :content, :tag_ids, :created_at, :updated_at
+
+  belongs_to :author
+  has_many :comments
+  has_many :users
+end
+```
+
+### Deserializable resources
+
+```ruby
+# app/deserializers/post.rb
+class DeserializablePost < JSONAPI::Deserializable::Resource
+  attributes :title, :content, :tag_ids
+end
+```
+
+## Rendering resources from controllers
+
+Once your [serializable resources](/guides/serialization) are defined, building
+a JSON API document from your business objects is straightforward. `jsonapi-rails` ties in
+to the standard Rails [`render`](https://guides.rubyonrails.org/layouts_and_rendering.html) method.
+
+```ruby
+# app/controllers/posts_controller.rb
 class PostsController < ActionController::Base
   # ...
 
@@ -32,7 +60,10 @@ class PostsController < ActionController::Base
 end
 ```
 
-## Rendering relationships
+For a comprehensive list of renderer options, see
+[Renderer options](/guides/serialization/rendering.html).
+
+### Rendering relationships
 
 ```ruby
 class PostsController < ActionController::Base
@@ -50,7 +81,7 @@ class PostsController < ActionController::Base
 end
 ```
 
-## Rendering errors
+### Rendering errors
 
 ```ruby
 class PostsController < ActionController::Base
@@ -67,6 +98,73 @@ class PostsController < ActionController::Base
   end
 
   # ...
+end
+```
+
+### A full controller example
+```ruby
+# app/controllers/posts_controller.rb
+class PostsController < ActionController::Base
+  deserializable_resource :post, only: [:create, :update]
+
+  def index
+    render jsonapi: Posts.all,
+           include: [:author, comments: [:author]],
+           fields: { users: [:name, :email],
+                     posts: [:title, :content] }
+  end
+
+  def show
+    render jsonapi: post, rendering_options
+  end
+
+  def create
+    post = Post.create(create_params)
+
+    if post.save
+      render jsonapi: post, rendering_options.merge(status: :created)
+    else
+      render jsonapi_errors: post.errors
+    end
+  end
+
+  def update
+    post = Post.find(params[:id])
+    post.assign_attributes(update_params)
+
+    if post.save
+      render jsonapi: post, rendering_options
+    else
+      render jsonapi_errors: post.errors
+    end
+  end
+
+  def destroy
+    post = Post.find(params[:id])
+
+    if post.destroy
+      head :no_content
+    else
+      head :conflict
+    end
+  end
+
+  private
+
+  def create_params
+    params.require(:post).permit(:title, :content, :tag_ids)
+  end
+
+  def update_params
+    params.require(:post).permit(:title, :content, :tag_ids)
+  end
+
+  def rendering_options
+    {
+      include: [:author, comments: [:author]],
+      fields: { users: [:name, :email] }
+    }
+  end
 end
 ```
 
