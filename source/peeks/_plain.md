@@ -30,3 +30,5 @@ resource.to_h
 #      comments_types: ['comments', 'comments', 'comments']
 #    }
 ```
+
+Further instructions are in the [getting started guide for plain Ruby](guides/getting_started/plain_ruby).
