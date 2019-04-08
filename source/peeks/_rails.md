@@ -19,3 +19,5 @@ class PostsController < ApplicationController
   end
 end
 ```
+
+Further instructions are in the [getting started guide for Rails](guides/getting_started/rails).

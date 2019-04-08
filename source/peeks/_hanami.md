@@ -30,3 +30,4 @@ module API::Controllers::Posts
   end
 end
 ```
+Further instructions are in the [getting started guide for Hanami](guides/getting_started/hanami).
